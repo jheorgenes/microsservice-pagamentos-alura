@@ -45,8 +45,11 @@ public class PagamentoController {
         URI endereco = uriBuilder.path("/pagamentos/{id}").buildAndExpand(pagamento.getId()).toUri();
 
         // Gerando a mensagem do AMQP com SimpleMessageConverter
-        Message message = new Message(("Criei um pagamento com o id " + pagamento.getId()).getBytes()); // A mensagem em string precisa ser convertida em bytes
-        rabbitTemplate.send("pagamento.concluido", message); // Enviando a mensagem para o RabbitMQ
+//        Message message = new Message(("Criei um pagamento com o id " + pagamento.getId()).getBytes()); // A mensagem em string precisa ser convertida em bytes
+//        rabbitTemplate.send("pagamento.concluido", message); // Enviando a mensagem para o RabbitMQ
+
+        // Gerando a mensagem do AMQP com Jackson2JsonMessageConverter
+        rabbitTemplate.convertAndSend("pagamento.concluido", pagamento);
         return ResponseEntity.created(endereco).body(pagamento);
     }
 
