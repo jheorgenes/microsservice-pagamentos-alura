@@ -1,5 +1,6 @@
 package br.com.alurafood.pagamentos.amqp;
 
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -13,15 +14,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PagamentoAMQPConfiguration {
-
-    /**
-     * Criando uma fila com o nome "pagamento.concluido" e que não será durável
-     */
-    @Bean
-    public Queue criaFila() {
-//        return new Queue("pagamento.concluido", false);
-        return QueueBuilder.nonDurable("pagamento.concluido").build();
-    }
 
     /**
      * Criando um administrador do RabbitMQ
@@ -48,12 +40,17 @@ public class PagamentoAMQPConfiguration {
     }
 
     /**
-     * Definindo o RabbitTemplate com o Jackson2JsonMessageConverter como conversor
+     * Definindo o RabbitTemplate com o Jackson2JsonMessageConverter como conversor padrão
      */
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, Jackson2JsonMessageConverter messageConverter) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange("pagamentos.ex");
     }
 }

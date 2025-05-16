@@ -49,7 +49,7 @@ public class PagamentoController {
 //        rabbitTemplate.send("pagamento.concluido", message); // Enviando a mensagem para o RabbitMQ
 
         // Gerando a mensagem do AMQP com Jackson2JsonMessageConverter
-        rabbitTemplate.convertAndSend("pagamento.concluido", pagamento);
+        rabbitTemplate.convertAndSend("pagamentos.ex", "", pagamento);
         return ResponseEntity.created(endereco).body(pagamento);
     }
 
